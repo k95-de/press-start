@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Presenter · Khaled: The Game</title>
+<style>
+  @font-face{font-family:Inter;font-weight:400;src:url(assets/fonts/inter-latin-400-normal.woff2)}
+  @font-face{font-family:Inter;font-weight:600;src:url(assets/fonts/inter-latin-600-normal.woff2)}
+  @font-face{font-family:Mono;src:url(assets/fonts/jetbrains-mono-latin-500-normal.woff2)}
+  :root{--ok:#34E39B;--warn:#FFD84A;--bad:#FF5A5F}
+  *{box-sizing:border-box;margin:0}
+  body{background:#07090D;color:#EEF2FA;font-family:Inter,sans-serif;padding:22px 26px;display:flex;flex-direction:column;gap:16px;height:100vh}
+  .top{display:flex;justify-content:space-between;align-items:center;font-family:Mono,monospace}
+  .where{font-size:15px;color:#97A2B8;letter-spacing:.08em}
+  .where b{color:#fff;font-size:18px}
+  .clock{font-size:42px;font-weight:600}
+  .clock small{font-size:14px;color:#97A2B8;margin-left:8px}
+  .now{font-size:30px;line-height:1.45;background:#0F141E;border:1px solid #1E2635;border-radius:14px;padding:20px 24px;flex:1;overflow:auto}
+  .next{font-size:18px;line-height:1.4;color:#97A2B8;border-left:3px solid #3D7BFF;padding-left:14px}
+  .next b{color:#3D7BFF;font-family:Mono,monospace;font-size:13px;display:block;margin-bottom:4px}
+  .plan{display:flex;gap:6px}
+  .plan div{flex:1;font-family:Mono,monospace;font-size:11px;padding:6px 8px;border-radius:6px;background:#0F141E;color:#5B6578;text-align:center}
+  .plan div.cur{background:#3D7BFF;color:#fff}
+  .btns{display:flex;gap:10px}
+  button{flex:1;font:600 18px Inter;padding:14px;border-radius:10px;border:1px solid #2A3446;background:#111724;color:#fff;cursor:pointer}
+  button:hover{background:#1B2436}
+  .hint{font-family:Mono,monospace;font-size:12px;color:#5B6578}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="where">WORLD <b id="w">–</b> · <b id="n">waiting for the game…</b> · CLICK <b id="c">–</b></div>
+    <div class="clock"><span id="t">0:00</span><small>/ 10:00</small></div>
+  </div>
+  <div class="now" id="now">Open the game window and press P there. This window follows along.</div>
+  <div class="next"><b>NEXT CLICK</b><span id="next">–</span></div>
+  <div class="plan" id="plan"></div>
+  <div class="btns"><button id="prev">‹ Back</button><button id="fwd">Next ›</button></div>
+  <div class="hint">Arrow keys work here too. Share only the GAME window in Teams, not this one.</div>
+<script>
+  let t0 = 0;
+  const $ = id => document.getElementById(id);
+  const send = cmd => window.opener && window.opener.postMessage({ type: "cmd", cmd }, "*");
+  $("prev").onclick = () => send("prev");
+  $("fwd").onclick = () => send("next");
+  addEventListener("keydown", e => {
+    if (["ArrowRight", " ", "PageDown", "Enter"].includes(e.key)) { e.preventDefault(); send("next"); }
+    if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); send("prev"); }
+  });
+  addEventListener("message", e => {
+    const d = e.data || {};
+    if (d.type !== "state") return;
+    $("w").textContent = d.world; $("n").textContent = d.name.toUpperCase() + (d.topic ? " · " + d.topic : "");
+    $("c").textContent = d.beat + "/" + d.beats;
+    $("now").textContent = d.now; $("next").textContent = d.next;
+    t0 = d.t0;
+    $("plan").innerHTML = d.plan.map(p => `<div class="${p.cur ? "cur" : ""}">${p.name}<br>${Math.round(p.secs / 6) / 10} min</div>`).join("");
+  });
+  setInterval(() => {
+    if (!t0) return;
+    const s = Math.floor((Date.now() - t0) / 1000), el = $("t");
+    el.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+    el.style.color = s > 600 ? "var(--bad)" : s > 540 ? "var(--warn)" : "var(--ok)";
+  }, 500);
+  send("hello");
+</script>
+</body>
+</html>

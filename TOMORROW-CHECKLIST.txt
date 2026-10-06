@@ -1,0 +1,25 @@
+KHALED: THE GAME - checklist for the presentation (Tuesday, Teams)
+
+BEFORE THE MEETING
+1. Laptop on power. Close heavy apps (other browsers, OneDrive sync, games).
+2. Cable internet, or sit close to the Wi-Fi router.
+3. Double-click START-HERE.bat. The game opens in the browser.
+4. Press F for full screen.
+5. Optional: press P to open your presenter window (notes + timer) on a second screen.
+
+WHEN YOU SHARE IN TEAMS
+6. Share -> Window -> the browser window with the game (NOT "Screen").
+7. Look for "Optimize for video" / "Optimize for motion" in the Teams share bar.
+   If you see it, turn it on.
+8. Tick "Include sound" only if you want them to hear the game sounds.
+
+IN THE GAME
+9. Press L for Teams mode if the test tonight looked choppy.
+10. After each click, pause a moment: viewers see everything 1-2 seconds later.
+
+KEYS
+Right arrow / Space / clicker = next      Left arrow = back
+M = jump to any world (for questions)     T = hide/show timer
+N = notes on screen                       P = presenter window
+L = Teams mode                            S = sound on/off
+F = full screen                           H = hide the small control buttons
